@@ -1,7 +1,7 @@
-import * as faceapi from '/static/fapi/dist/face-api.esm.js';
+import * as faceapi from "{%static '/static/fapi/dist/face-api.esm.js'%}";
 
 // configuration options
-const modelPath = '/static/fapi/model/'; // path to model folder that will be loaded using http
+const modelPath = "{%static '/static/fapi/model/'%}"; // path to model folder that will be loaded using http
 const minScore = 0.2; // minimum score
 const maxResults = 5; // maximum number of results to return
 let optionsSSDMobileNet;
