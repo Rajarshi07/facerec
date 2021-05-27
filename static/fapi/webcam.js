@@ -2,7 +2,6 @@ import * as faceapi from '/static/fapi/dist/face-api.esm.js';
 
 // configuration options
 const modelPath = '/static/fapi/model/'; // path to model folder that will be loaded using http
-// const modelPath = 'https://vladmandic.github.io/face-api/model/'; // path to model folder that will be loaded using http
 const minScore = 0.2; // minimum score
 const maxResults = 5; // maximum number of results to return
 let optionsSSDMobileNet;
@@ -44,16 +43,16 @@ function drawFaces(canvas, data, fps) {
     ctx.globalAlpha = 1;
     // const expression = person.expressions.sort((a, b) => Object.values(a)[0] - Object.values(b)[0]);
     const expression = Object.entries(person.expressions).sort((a, b) => b[1] - a[1]);
-    ctx.fillStyle = 'black';
-    ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 59);
-    ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 41);
-    ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 23);
-    ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 5);
+    // ctx.fillStyle = 'black';
+    // ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 59);
+    // ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 41);
+    // ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 23);
+    // ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 5);
     ctx.fillStyle = 'lightblue';
-    ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 60);
-    ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 42);
-    ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 24);
-    ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 6);
+    // ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 60);
+    ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 6);
+    // ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 24);
+    // ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 6);
     // draw face points for each face
     ctx.globalAlpha = 0.8;
     ctx.fillStyle = 'lightblue';
@@ -75,7 +74,7 @@ async function detectVideo(video, canvas) {
     .withFaceLandmarks()
     .withFaceExpressions()
     // .withFaceDescriptors()
-    .withAgeAndGender()
+    // .withAgeAndGender()
     .then((result) => {
       const fps = 1000 / (performance.now() - t0);
       drawFaces(canvas, result, fps.toLocaleString());
@@ -91,12 +90,12 @@ async function detectVideo(video, canvas) {
 
 // just initialize everything and call main function
 async function setupCamera() {
+  log('Setting up camera...');
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   if (!video || !canvas) return null;
 
   let msg = '';
-  log('Setting up camera');
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
     log('Camera Error: access not supported');
@@ -162,7 +161,7 @@ async function setupCamera() {
 
 async function setupFaceAPI() {
   // load face-api models
-  // log('Models loading');
+  log('Models loading...');
   // await faceapi.nets.tinyFaceDetector.load(modelPath); // using ssdMobilenetv1
   await faceapi.nets.ssdMobilenetv1.load(modelPath);
   await faceapi.nets.ageGenderNet.load(modelPath);
@@ -177,7 +176,7 @@ async function setupFaceAPI() {
 
 async function main() {
   // initialize tfjs
-  log('FaceAPI WebCam Test');
+  log('Webcam Emotion Recognition');
 
   // if you want to use wasm backend location for wasm binaries must be specified
   // await faceapi.tf.setWasmPaths('../node_modules/@tensorflow/tfjs-backend-wasm/dist/');

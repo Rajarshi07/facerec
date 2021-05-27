@@ -7,11 +7,11 @@ def report(request):
 
 def room(request, room_name):
     return render(request, 'chat.html', {
-        'room_name': room_name
+        'session_name': room_name
     })
 
 
 def facedet(request, session):
     return render(request, 'webcam.html', {
-        'room_name': session
+        'session_name': session
     })
