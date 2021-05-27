@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.report),
     path('chat/<str:room_name>/', views.room, name='room'),
     path('facedet/<str:session>/', views.facedet, name='facedet'),
-    re_path(r'^/static/fapi/dist/face-api.esm.js', (TemplateView.as_view(template_name="/static/fapi/dist/face-api.esm.js", content_type='application/javascript', )), name='/static/fapi/dist/face-api.esm.js'),
+    re_path(r'^webcam.js', (TemplateView.as_view(template_name="webcam.js", content_type='application/javascript', )), name='webcam.js'),
 ]
