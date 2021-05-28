@@ -13,7 +13,6 @@ function str(json) {
   text += '</font>';
   return text;
 }
-
 // helper function to print strings to html document as a log
 function log(...txt) {
   // eslint-disable-next-line no-console
@@ -22,70 +21,73 @@ function log(...txt) {
   if (div) div.innerHTML += `<br>${txt}`;
 }
 
+
 // helper function to draw detected faces
-function drawFaces(canvas, data, fps) {
+
+function drawFacePoint(ctx,person){
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = 'lightblue';
+  const pointSize = 2;
+  for (let i = 0; i < person.landmarks.positions.length; i++) {
+    ctx.beginPath();
+    ctx.arc(person.landmarks.positions[i].x, person.landmarks.positions[i].y, pointSize, 0, 2 * Math.PI);
+    // ctx.fillText(`${i}`, person.landmarks.positions[i].x + 4, person.landmarks.positions[i].y + 4);
+    ctx.fill();
+  }
+}
+function drawFaceBox(ctx,person){
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'deepskyblue';
+  ctx.fillStyle = 'deepskyblue';
+  ctx.globalAlpha = 0.6;
+  ctx.beginPath();
+  ctx.rect(person.detection.box.x, person.detection.box.y, person.detection.box.width, person.detection.box.height);
+  ctx.stroke();
+}
+function drawFaceExpression(ctx,person,expression){
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = 'lightblue';
+  ctx.fillText(`expression 1: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 6);
+  ctx.fillText(`expression 2: ${Math.round(100 * expression[1][1])}% ${expression[1][0]}`, person.detection.box.x, person.detection.box.y - 24);
+  ctx.fillText(`expression 3: ${Math.round(100 * expression[2][1])}% ${expression[2][0]}`, person.detection.box.x, person.detection.box.y - 42);
+}
+function drawFPS(ctx,fps){
+  ctx.font = 'small-caps 20px "Segoe UI"';
+  ctx.fillStyle = 'white';
+  ctx.fillText(`FPS: ${fps}`, 10, 25);
+}
+function drawFaces(canvas, data, fps,faces) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // draw title
-  ctx.font = 'small-caps 20px "Segoe UI"';
-  ctx.fillStyle = 'white';
-  ctx.fillText(`FPS: ${fps}`, 10, 25);
-  for (const person of data) {
+  drawFPS(ctx,fps);
+  for (var i =0; i<data.length;i++) {
+    const person = data[i];
+
+    //Setting weights for individual expressions
+    person.expressions['sad'] *= 2;//sad expression weight doubled
+    person.expressions['neutral'] *= 0.5;//neutral expression weight halved
+    var expression = Object.entries(person.expressions).sort((a, b) => b[1] - a[1]);
+    // console.log(JSON.stringify(person.expressions))
     // draw box around each face
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = 'deepskyblue';
-    ctx.fillStyle = 'deepskyblue';
-    ctx.globalAlpha = 0.6;
-    ctx.beginPath();
-    ctx.rect(person.detection.box.x, person.detection.box.y, person.detection.box.width, person.detection.box.height);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-    // const expression = person.expressions.sort((a, b) => Object.values(a)[0] - Object.values(b)[0]);
-    const expression = Object.entries(person.expressions).sort((a, b) => b[1] - a[1]);
-    // ctx.fillStyle = 'black';
-    // ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 59);
-    // ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 41);
-    // ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 23);
-    // ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 5);
-    ctx.fillStyle = 'lightblue';
-    // ctx.fillText(`gender: ${Math.round(100 * person.genderProbability)}% ${person.gender}`, person.detection.box.x, person.detection.box.y - 60);
-    ctx.fillText(`expression: ${Math.round(100 * expression[0][1])}% ${expression[0][0]}`, person.detection.box.x, person.detection.box.y - 6);
-    // ctx.fillText(`age: ${Math.round(person.age)} years`, person.detection.box.x, person.detection.box.y - 24);
-    // ctx.fillText(`roll:${person.angle.roll.toFixed(3)} pitch:${person.angle.pitch.toFixed(3)} yaw:${person.angle.yaw.toFixed(3)}`, person.detection.box.x, person.detection.box.y - 6);
+    drawFaceBox(ctx,person);
+    // draw facial expressions
+    drawFaceExpression(ctx,person,expression);
     // draw face points for each face
-    ctx.globalAlpha = 0.8;
-    ctx.fillStyle = 'lightblue';
-    const pointSize = 2;
-    for (let i = 0; i < person.landmarks.positions.length; i++) {
-      ctx.beginPath();
-      ctx.arc(person.landmarks.positions[i].x, person.landmarks.positions[i].y, pointSize, 0, 2 * Math.PI);
-      // ctx.fillText(`${i}`, person.landmarks.positions[i].x + 4, person.landmarks.positions[i].y + 4);
-      ctx.fill();
-    }
+    drawFacePoint(ctx,person)
   }
 }
 
 async function detectVideo(video, canvas) {
   if (!video || video.paused) return false;
   const t0 = performance.now();
-  faceapi
-    .detectAllFaces(video, optionsSSDMobileNet)
-    .withFaceLandmarks()
-    .withFaceExpressions()
-    // .withFaceDescriptors()
-    // .withAgeAndGender()
-    .then((result) => {
-      const fps = 1000 / (performance.now() - t0);
-      drawFaces(canvas, result, fps.toLocaleString());
-      requestAnimationFrame(() => detectVideo(video, canvas));
-      return true;
-    })
-    .catch((err) => {
-      log(`Detect Error: ${str(err)}`);
-      return false;
-    });
-  return false;
+  const result = await faceapi.detectAllFaces(video, optionsSSDMobileNet).withFaceLandmarks().withFaceExpressions()
+  const faces =await faceapi.extractFaces(video, result.map(result => result.detection));
+  const fps = 1000 / (performance.now() - t0);
+  drawFaces(canvas, result, fps.toLocaleString(),video,faces);
+  requestAnimationFrame(() => detectVideo(video, canvas));
+  return true;
 }
 
 // just initialize everything and call main function
