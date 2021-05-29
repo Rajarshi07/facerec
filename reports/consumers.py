@@ -28,7 +28,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
         message = json.loads(message)
         try:
-            print("message",message['expression'],"    ",message['face'],self.room_group_name,flush=True)
+            # print("message",message['expression'],"    ",message['face'],self.room_group_name,flush=True)
+            
             await self.channel_layer.group_send(
             self.room_group_name,
             {
