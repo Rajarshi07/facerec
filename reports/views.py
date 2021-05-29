@@ -5,6 +5,10 @@ from django.shortcuts import render
 def index(request):
     return render(request,'login.html')
 
+def reports(request):
+    return render(request,'401.html')
+
+
 def facedet(request, session):
     return render(request, 'webcam.html', {
         'session_name': session

@@ -3,11 +3,10 @@
 ## INSTALL AND RUN REDIS
 # MAC OS : 
 brew install redis 
-# LINUX(DEBIAN)
+# LINUX(DEBIAN/UBUNTU)
 sudo add-apt-repository ppa:redislabs/redis
 sudo apt-get update
 sudo apt-get install redis
-
 
 ## SETTING UP VIRTUAL ENV FOR PYTHON
 # INSTALL PACKAGE
@@ -19,7 +18,6 @@ source venv/bin/activate
 
 ## INSTALL DEPENDENCIES
 python3 -m pip install -r req-facedet.txt
-
 
 ## CONFIGURING THE APP
 python3 manage.py collectstatic
