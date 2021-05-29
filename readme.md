@@ -12,6 +12,18 @@
 
 `sudo apt-get install redis`
 
+### CHECK INSTALLATION
+
+Run this command
+
+`redis-cli ping`
+
+`PONG`
+
+If pong is not returned, start the redis service using 
+
+`redis-server`
+
 
 ## SETTING UP VIRTUAL ENV FOR PYTHON
 
