@@ -60,7 +60,7 @@ If pong is not returned, start the redis service using
 `python3 manage.py runserver` 
 
 
-##Notes:
+## Notes:
 
 1. Requires about 9mb RAM space per minuite of the session. So, session length is limited by available ram.
 2. Emotion Recognition is based on only the image of the face. It's accuracy is reduced for accessories and facial hair. It may not be accurate if facial emotions are supressed and doesn't mirror what the person is feeling.
