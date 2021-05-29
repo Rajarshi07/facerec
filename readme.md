@@ -2,7 +2,7 @@
 
 ## INSTALL AND RUN REDIS
 ### MAC OS : 
-brew install redis 
+`brew install redis `
 
 ### LINUX(DEBIAN/UBUNTU)
 
