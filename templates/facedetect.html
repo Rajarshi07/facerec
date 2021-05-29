@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-
+{%load static%}
 <head>
-    <script src="/static/face-api/dist/face-api.min.js"></script>
-    <script src="/static/face-api/common.js"></script>
-    <script src="/static/face-api/faceDetectionControls.js"></script>
-    <link rel="stylesheet" href="/static/face-api/styles.css">
+    <script src="{%static 'old-face-api/dist/face-api.min.js'%}"></script>
+    <script src="{%static 'old-face-api/common.js'%}"></script>
+    <script src="{% static 'old-face-api/faceDetectionControls.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'old-face-api/styles.css'%}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
@@ -28,13 +28,13 @@
 
             <!-- face_detector_selection_control -->
             <div id="face_detector_selection_control" class="row input-field" style="margin-right: 20px;">
-                <select id="selectFaceDetector">
+                <!-- <select id="selectFaceDetector">
                     <option value="ssd_mobilenetv1">SSD Mobilenet V1</option>
                     <option value="tiny_face_detector">Tiny Face Detector</option>
                 </select>
-                <label>Select Face Detector</label>
-            </div>
-            <!-- face_detector_selection_control -->
+                <label>Select Face Detector</label> -->
+            </div> 
+            <!-- face_detector_selection_control  -->
 
             <!-- check boxes -->
             <div class="row" style="width: 220px;">
@@ -153,9 +153,9 @@
             }
             faceapi.draw.drawFaceExpressions(canvas, resizedResult, minConfidence)
 
-            for(i=0;i<canvases.length;i++){
-                document.getElementById('CDIV').appendChild(canvases[i])
-            }
+            // for(i=0;i<canvases.length;i++){
+            //     document.getElementById('CDIV').appendChild(canvases[i])
+            // }
         }
         else{
             console.log("No faces")
@@ -164,7 +164,7 @@
         }
         setTimeout(() => onPlay())
     }
-    const modelPath = '/static/face-api/weights';
+    const modelPath = '/static/old-face-api/weights';
     async function run() {
         // load face detection and face expression recognition models
         await faceapi.loadTinyFaceDetectorModel(modelPath)

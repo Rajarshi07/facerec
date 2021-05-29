@@ -58,6 +58,7 @@ function drawFPS(ctx,fps){
 }
 function drawFaces(canvas, data, fps,faces) {
   const ctx = canvas.getContext('2d');
+  console.log(faces)
   if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // draw title
@@ -76,6 +77,7 @@ function drawFaces(canvas, data, fps,faces) {
     drawFaceExpression(ctx,person,expression);
     // draw face points for each face
     drawFacePoint(ctx,person)
+    sendData({'expression':person.expressions,'face':faces[i].toDataURL()})
   }
 }
 
@@ -85,7 +87,7 @@ async function detectVideo(video, canvas) {
   const result = await faceapi.detectAllFaces(video, optionsSSDMobileNet).withFaceLandmarks().withFaceExpressions()
   const faces =await faceapi.extractFaces(video, result.map(result => result.detection));
   const fps = 1000 / (performance.now() - t0);
-  drawFaces(canvas, result, fps.toLocaleString(),video,faces);
+  drawFaces(canvas, result, fps.toLocaleString(),faces);
   requestAnimationFrame(() => detectVideo(video, canvas));
   return true;
 }
@@ -153,7 +155,7 @@ async function setupCamera() {
       canvas.width = video.videoWidth;
       // @ts-ignore
       canvas.height = video.videoHeight;
-      // @ts-ignore
+      // @ts-ign with no media transfer can be implemented using just WebSockets whereas a realtime media transfer (audio ...nore
       video.play();
       detectVideo(video, canvas);
       resolve(true);
@@ -166,9 +168,9 @@ async function setupFaceAPI() {
   log('Models loading...');
   // await faceapi.nets.tinyFaceDetector.load(modelPath); // using ssdMobilenetv1
   await faceapi.nets.ssdMobilenetv1.load(modelPath);
-  await faceapi.nets.ageGenderNet.load(modelPath);
+  // await faceapi.nets.ageGenderNet.load(modelPath);
   await faceapi.nets.faceLandmark68Net.load(modelPath);
-  await faceapi.nets.faceRecognitionNet.load(modelPath);
+  // await faceapi.nets.faceRecognitionNet.load(modelPath);
   await faceapi.nets.faceExpressionNet.load(modelPath);
   optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({ minConfidence: minScore, maxResults });
 

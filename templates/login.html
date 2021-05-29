@@ -41,12 +41,13 @@
                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
                                             </div> -->
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="btn btn-primary" href="/reports/">Show Reports</a>
-                                                <a class="btn btn-primary" onclick="check()">Start Session</a>
+                                                <a class="btn btn-primary btn-sm" onclick="check2()">Start Alternate Session</a>
+                                                <a class="btn btn-primary btn-sm" onclick="check()">Start Session</a>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">
+                                        <a class="btn btn-secondary btn-sm" href="/reports/">Show Reports</a>
                                         <!-- <div class="small"><a href="register.html">Need an account? Sign up!</a></div> -->
                                     </div>
                                 </div>
@@ -76,6 +77,12 @@
                 SessionName = document.getElementById('sessionName').value
                 Password = document.getElementById('inputPassword')
                 if(Password.value == 'p1')window.location = '/facedet/'+SessionName;
+                else Password.classList.add('is-invalid');
+            }
+            const check2 = ()=>{
+                SessionName = document.getElementById('sessionName').value
+                Password = document.getElementById('inputPassword')
+                if(Password.value == 'p1')window.location = '/facedet_alt/'+SessionName;
                 else Password.classList.add('is-invalid');
             }
         </script>
